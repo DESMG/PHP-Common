@@ -3,4 +3,3 @@
 /.vscode
 /vendor
 *.log
-composer.lock
