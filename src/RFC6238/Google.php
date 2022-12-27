@@ -11,27 +11,49 @@ class Google
         'Y' => 24, 'Z' => 25, '2' => 26, '3' => 27, '4' => 28, '5' => 29, '6' => 30, '7' => 31
     ];
 
-    public static function verifyKey($b32seed, $key): bool
+    public static function generateKey(): string
+    {
+        $b32 = '234567QWERTYUIOPASDFGHJKLZXCVBNM';
+        $s = '';
+        for ($i = 0; $i < 32; $i++) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $s .= $b32[random_int(0, 31)];
+        }
+        return $s;
+    }
+
+    public static function verify(string $key, string $pass): bool
     {
         $timeStamp = self::getTimestamp();
-        $binarySeed = self::base32_decode($b32seed);
         for ($ts = $timeStamp - 2; $ts <= $timeStamp + 2; $ts++) {
-            if (self::oath_totp($binarySeed, $ts) == $key) {
+            if (self::getPass($key, $ts) == $pass) {
                 return true;
             }
         }
         return false;
     }
 
-    private static function getTimestamp(): float
+    public static function getTimestamp(): int
     {
-        return floor(microtime(true) / 30);
+        return (int)floor(microtime(true) / 30);
     }
 
-    private static function base32_decode($b32): string
+    public static function getPass(string $key, int $counter): string|false
+    {
+        if (strlen($key) < 16) {
+            return false;
+        }
+        $key = self::base32_decode($key);
+        $bin_counter = pack('N*', 0) . pack('N*', $counter);
+        $hash = hash_hmac('sha1', $bin_counter, $key, true);
+        $hash = self::truncate($hash);
+        return str_pad($hash, 6, '0', STR_PAD_LEFT);
+    }
+
+    private static function base32_decode(string $b32): string
     {
         $b32 = strtoupper($b32);
-        if (!preg_match('/^[ABCDEFGHIJKLMNOPQRSTUVWXYZ234567]+$/', $b32, $match)) {
+        if (!preg_match('/^[ABCDEFGHIJKLMNOPQRSTUVWXYZ234567]+$/', $b32)) {
             exit('Invalid characters in the base32 string.');
         }
         $l = strlen($b32);
@@ -50,34 +72,11 @@ class Google
         return $binary;
     }
 
-    public static function oath_totp(string $key, $counter): string
+    private static function truncate(string $hash): int
     {
-        if (strlen($key) < 8) {
-            exit('Secret key is too short. Must be at least 16 base 32 characters.');
-        }
-        $bin_counter = pack('N*', 0) . pack('N*', $counter);
-        $hash = hash_hmac('sha256', $bin_counter, $key, true);
-        return str_pad(self::oath_truncate($hash), 8, '0', STR_PAD_LEFT);
-    }
-
-    private static function oath_truncate($hash): int
-    {
-        $offset = ord($hash[19]) & 0xF;
-        return (
-                ((ord($hash[$offset + 0]) & 0x7F) << 24) |
-                ((ord($hash[$offset + 1]) & 0xFF) << 16) |
-                ((ord($hash[$offset + 2]) & 0xFF) << 8) |
-                ord($hash[$offset + 3]) & 0xFF
-            ) % pow(10, 8);
-    }
-
-    public static function generateKey(): string
-    {
-        $b32 = '234567QWERTYUIOPASDFGHJKLZXCVBNM';
-        $s = '';
-        for ($i = 0; $i < 32; $i++) {
-            $s .= $b32[rand(0, 31)];
-        }
-        return $s;
+        $offset = ord($hash[strlen($hash) - 1]) & 0xF;
+        $temp = unpack('N', substr($hash, $offset, 4));
+        $temp = $temp[1] & 0x7FFFFFFF;
+        return substr($temp, -6);
     }
 }

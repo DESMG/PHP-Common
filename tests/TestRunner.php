@@ -18,8 +18,8 @@ foreach ($files as $file) {
         continue;
     }
     echo str_repeat('=', 64) . PHP_EOL;
-    echo "$test_class::" . PHP_EOL;
     $test_class = new $test_class; // Instantiate the command
+    echo $test_class::class . PHP_EOL;
     $methods = get_class_methods($test_class);
     foreach ($methods as $method) {
         if (!str_starts_with($method, 'test')) {
