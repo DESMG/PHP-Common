@@ -93,9 +93,9 @@ class Ping
         $sumLatency = array_sum($latency);
         $successTimes = count($latency);
         $avgLatency = $sumLatency == 0 ? 0 : ($successTimes == 0 ? 0 : $sumLatency / $successTimes);
-        $this->latency = $avgLatency;
+        $this->latency = number_format($avgLatency, 3, '.', '');
         $lossRate = $loss / $times * 100;
-        $this->lossRate = $lossRate;
+        $this->lossRate = number_format($lossRate, 2, '.', '');
         return $output;
     }
 
