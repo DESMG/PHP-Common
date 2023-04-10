@@ -18,7 +18,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "ext-sockets": "*"
     },
     "autoload": {
         "psr-4": {
