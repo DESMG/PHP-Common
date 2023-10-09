@@ -13,11 +13,7 @@ foreach ($files as $file) {
     $pathName = $file->getPathName();
     $test = str_replace('.php', '', $fileName);
     $test_class = "Tests\\Units\\$test";
-    require_once $pathName;
-    if (!class_exists($test_class, false)) {
-        continue;
-    }
-    echo str_repeat('=', 64) . PHP_EOL;
+    echo str_repeat('-', 64) . PHP_EOL;
     $test_class = new $test_class; // Instantiate the command
     echo $test_class::class . PHP_EOL;
     $methods = get_class_methods($test_class);
@@ -27,6 +23,7 @@ foreach ($files as $file) {
         }
         $test_class->$method();
     }
+    echo str_repeat('-', 64) . PHP_EOL;
 }
 echo str_repeat('=', 64) . PHP_EOL;
 echo 'Done.' . PHP_EOL;
