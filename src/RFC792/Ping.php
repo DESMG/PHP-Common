@@ -53,14 +53,55 @@ class Ping
     }
 
     /**
-     * @param int $seconds
-     * @return void
+     * @return string
      */
-    public function setTimeout(int $seconds): void
+    public function getHost(): string
     {
-        $this->timeout = $seconds;
-        socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => $seconds, 'usec' => 0]);
-        socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => $seconds, 'usec' => 0]);
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     * @param string $preferredDnsServer
+     * @return true
+     * @throws Exception
+     */
+    public function setHost(string $host, string $preferredDnsServer = 'default'): true
+    {
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $this->host = $host;
+            return true;
+        }
+        if ($preferredDnsServer == 'default') {
+            $host = gethostbyname($host);
+        } else {
+            $host = dns_get_record($host, DNS_A);
+            if (is_array($host) && count($host) > 0) {
+                $host = $host[0]['ip'];
+            }
+        }
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $this->host = $host;
+            return true;
+        } else {
+            throw new Exception('Cannot resolve host');
+        }
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getLatency(): float|int
+    {
+        return $this->latency;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getLossRate(): float|int
+    {
+        return $this->lossRate;
     }
 
     /**
@@ -136,54 +177,13 @@ class Ping
     }
 
     /**
-     * @return float|int
+     * @param int $seconds
+     * @return void
      */
-    public function getLatency(): float|int
+    public function setTimeout(int $seconds): void
     {
-        return $this->latency;
-    }
-
-    /**
-     * @return float|int
-     */
-    public function getLossRate(): float|int
-    {
-        return $this->lossRate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHost(): string
-    {
-        return $this->host;
-    }
-
-    /**
-     * @param string $host
-     * @param string $preferredDnsServer
-     * @return true
-     * @throws Exception
-     */
-    public function setHost(string $host, string $preferredDnsServer = 'default'): true
-    {
-        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $this->host = $host;
-            return true;
-        }
-        if ($preferredDnsServer == 'default') {
-            $host = gethostbyname($host);
-        } else {
-            $host = dns_get_record($host, DNS_A);
-            if (is_array($host) && count($host) > 0) {
-                $host = $host[0]['ip'];
-            }
-        }
-        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $this->host = $host;
-            return true;
-        } else {
-            throw new Exception('Cannot resolve host');
-        }
+        $this->timeout = $seconds;
+        socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => $seconds, 'usec' => 0]);
+        socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => $seconds, 'usec' => 0]);
     }
 }

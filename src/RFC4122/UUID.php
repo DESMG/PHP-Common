@@ -7,13 +7,13 @@ use DateTime;
 class UUID
 {
     /**
-     * @return string 64 characters long
+     * @return string 32 characters long
      */
-    public static function generateUniqueID(): string
+    public static function generateShortUniqueID(): string
     {
         $time = new DateTime;
         $time = $time->format('YmdHisu');
-        $random = self::random(40);
+        $random = self::random(8);
         /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
         return "DE{$time}FF{$random}";
     }
@@ -30,18 +30,6 @@ class UUID
     }
 
     /**
-     * @return string 32 characters long
-     */
-    public static function generateShortUniqueID(): string
-    {
-        $time = new DateTime;
-        $time = $time->format('YmdHisu');
-        $random = self::random(8);
-        /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
-        return "DE{$time}FF{$random}";
-    }
-
-    /**
      * @return string 16 characters long
      */
     public static function generateTinyUniqueID(): string
@@ -50,6 +38,18 @@ class UUID
         $time = $time->format('U');
         $random = self::random(6);
         return "$time$random";
+    }
+
+    /**
+     * @return string 64 characters long
+     */
+    public static function generateUniqueID(): string
+    {
+        $time = new DateTime;
+        $time = $time->format('YmdHisu');
+        $random = self::random(40);
+        /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+        return "DE{$time}FF{$random}";
     }
 
     /**
