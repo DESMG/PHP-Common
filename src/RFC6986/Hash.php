@@ -2,83 +2,120 @@
 
 namespace DESMG\RFC6986;
 
+use InvalidArgumentException;
+
+/**
+ * @method string md5(string $data, string $key = '')
+ * @method string sha1(string $data, string $key = '')
+ * @method string sha256(string $data, string $key = '')
+ * @method string sha384(string $data, string $key = '')
+ * @method string sha512(string $data, string $key = '')
+ * @method bool md5_equals(string $hash, string $data, string $key = '')
+ * @method bool sha1_equals(string $hash, string $data, string $key = '')
+ * @method bool sha256_equals(string $hash, string $data, string $key = '')
+ * @method bool sha384_equals(string $hash, string $data, string $key = '')
+ * @method bool sha512_equals(string $hash, string $data, string $key = '')
+ * @method string md5_file(string $filename, string $key = '')
+ * @method string sha1_file(string $filename, string $key = '')
+ * @method string sha256_file(string $filename, string $key = '')
+ * @method string sha384_file(string $filename, string $key = '')
+ * @method string sha512_file(string $filename, string $key = '')
+ * @method bool md5_file_equals(string $hash, string $filename, string $key = '')
+ * @method bool sha1_file_equals(string $hash, string $filename, string $key = '')
+ * @method bool sha256_file_equals(string $hash, string $filename, string $key = '')
+ * @method bool sha384_file_equals(string $hash, string $filename, string $key = '')
+ * @method bool sha512_file_equals(string $hash, string $filename, string $key = '')
+ * @method static string md5(string $data, string $key = '')
+ * @method static string sha1(string $data, string $key = '')
+ * @method static string sha256(string $data, string $key = '')
+ * @method static string sha384(string $data, string $key = '')
+ * @method static string sha512(string $data, string $key = '')
+ * @method static bool md5_equals(string $hash, string $data, string $key = '')
+ * @method static bool sha1_equals(string $hash, string $data, string $key = '')
+ * @method static bool sha256_equals(string $hash, string $data, string $key = '')
+ * @method static bool sha384_equals(string $hash, string $data, string $key = '')
+ * @method static bool sha512_equals(string $hash, string $data, string $key = '')
+ * @method static string md5_file(string $filename, string $key = '')
+ * @method static string sha1_file(string $filename, string $key = '')
+ * @method static string sha256_file(string $filename, string $key = '')
+ * @method static string sha384_file(string $filename, string $key = '')
+ * @method static string sha512_file(string $filename, string $key = '')
+ * @method static bool md5_file_equals(string $hash, string $filename, string $key = '')
+ * @method static bool sha1_file_equals(string $hash, string $filename, string $key = '')
+ * @method static bool sha256_file_equals(string $hash, string $filename, string $key = '')
+ * @method static bool sha384_file_equals(string $hash, string $filename, string $key = '')
+ * @method static bool sha512_file_equals(string $hash, string $filename, string $key = '')
+ */
 class Hash
 {
-    public static function sha256_equals(string $hash, string $data, string $key = ''): bool
+    /**
+     * @param string $name
+     * @param array $arguments
+     * @return string
+     */
+    public static function __callStatic(string $name, array $arguments): string
     {
-        return hash_equals($hash, self::sha256($data, $key));
+        return (new self)->__call($name, $arguments);
     }
 
     /**
-     * @return string 64 characters long
+     * @param string $name
+     * @param array $arguments
+     * @return string
      */
-    public static function sha256(string $data, string $key = ''): string
+    public function __call(string $name, array $arguments): string
     {
-        return strtoupper($key == '' ? hash('sha256', $data) : hash_hmac('sha256', $data, $key));
-    }
-
-    public static function sha256_file_equals(string $hash, string $data, string $key = ''): bool
-    {
-        return hash_equals($hash, self::sha256_file($data, $key));
+        $names = explode('_', $name);
+        $method = Hashs::tryFrom($names[0]) ?? throw new InvalidArgumentException('Missing argument #1 for ' . __CLASS__ . '::' . $name . '()');
+        $isfile = str_contains($name, '_file');
+        $equals = str_ends_with($name, '_equals');
+        if ($equals) {
+            $hash = $arguments[0] ?? throw new InvalidArgumentException('Missing argument #1 for ' . __CLASS__ . '::' . $name . '()');
+            $data = $arguments[1] ?? throw new InvalidArgumentException('Missing argument #2 for ' . __CLASS__ . '::' . $name . '()');
+            $key = $arguments[2] ?? '';
+            return $this->equals($method, $isfile, $hash, $data, $key);
+        } else {
+            $data = $arguments[0] or throw new InvalidArgumentException('Missing argument #1 for ' . __CLASS__ . '::' . $name . '()');
+            $key = $arguments[1] ?? '';
+            return $this->hash($method, $isfile, $data, $key);
+        }
     }
 
     /**
-     * @return string 64 characters long
+     * @param Hashs $method
+     * @param bool $isfile
+     * @param string $hash
+     * @param string $data
+     * @param string $key
+     * @return string
      */
-    public static function sha256_file(string $data, string $key = ''): string
+    private function equals(Hashs $method, bool $isfile, string $hash, string $data, string $key): string
     {
-        return strtoupper($key == '' ? hash_file('sha256', $data) : hash_hmac_file('sha256', $data, $key));
-    }
-
-    public static function sha384_equals(string $hash, string $data, string $key = ''): bool
-    {
-        return hash_equals($hash, self::sha384($data, $key));
+        return hash_equals(
+            $hash,
+            $this->hash($method, $isfile, $data, $key)
+        );
     }
 
     /**
-     * @return string 96 characters long
+     * @param Hashs $method
+     * @param bool $isfile
+     * @param string $data
+     * @param string $key
+     * @return string
      */
-    public static function sha384(string $data, string $key = ''): string
+    private function hash(Hashs $method, bool $isfile, string $data, string $key): string
     {
-        return strtoupper($key == '' ? hash('sha384', $data) : hash_hmac('sha384', $data, $key));
-    }
-
-    public static function sha384_file_equals(string $hash, string $data, string $key = ''): bool
-    {
-        return hash_equals($hash, self::sha384_file($data, $key));
-    }
-
-    /**
-     * @return string 96 characters long
-     */
-    public static function sha384_file(string $data, string $key = ''): string
-    {
-        return strtoupper($key == '' ? hash_file('sha384', $data) : hash_hmac_file('sha384', $data, $key));
-    }
-
-    public static function sha512_equals(string $hash, string $data, string $key = ''): bool
-    {
-        return hash_equals($hash, self::sha512($data, $key));
-    }
-
-    /**
-     * @return string 128 characters long
-     */
-    public static function sha512(string $data, string $key = ''): string
-    {
-        return strtoupper($key == '' ? hash('sha512', $data) : hash_hmac('sha512', $data, $key));
-    }
-
-    public static function sha512_file_equals(string $hash, string $data, string $key = ''): bool
-    {
-        return hash_equals($hash, self::sha512_file($data, $key));
-    }
-
-    /**
-     * @return string 128 characters long
-     */
-    public static function sha512_file(string $data, string $key = ''): string
-    {
-        return strtoupper($key == '' ? hash_file('sha512', $data) : hash_hmac_file('sha512', $data, $key));
+        return $isfile ?
+            strtoupper(
+                empty($key) ?
+                    hash_file($method->value, $data) :
+                    hash_hmac_file($method->value, $data, $key)
+            ) :
+            strtoupper(
+                empty($key) ?
+                    hash($method->value, $data) :
+                    hash_hmac($method->value, $data, $key)
+            );
     }
 }
