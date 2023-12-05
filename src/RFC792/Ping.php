@@ -4,6 +4,7 @@ namespace DESMG\RFC792;
 
 use DateTime;
 use Exception;
+use RuntimeException;
 use Socket;
 
 class Ping
@@ -63,10 +64,10 @@ class Ping
     /**
      * @param string $host
      * @param string $preferredDnsServer
-     * @return true
+     * @return bool
      * @throws Exception
      */
-    public function setHost(string $host, string $preferredDnsServer = 'default'): true
+    public function setHost(string $host, string $preferredDnsServer = 'default'): bool
     {
         if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             $this->host = $host;
@@ -84,7 +85,8 @@ class Ping
             $this->host = $host;
             return true;
         } else {
-            throw new Exception('Cannot resolve host');
+            trigger_error('Cannot resolve host: ' . $host, E_USER_WARNING);
+            return false;
         }
     }
 
@@ -105,9 +107,10 @@ class Ping
     }
 
     /**
-     * @alias run
      * @param int $times
      * @return string
+     * @noinspection PhpUnused
+     * @see          run
      */
     public function ping(int $times = 4): string
     {
@@ -116,6 +119,9 @@ class Ping
 
     public function run(int $times = 4): string
     {
+        if (empty($this->host) || !filter_var($this->host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            throw new RuntimeException('Host must be set before running');
+        }
         $output = '';
         $loss = 0;
         $latency = [];
@@ -145,7 +151,7 @@ class Ping
      */
     private function getTimeus(): float
     {
-        $date = new DateTime();
+        $date = new DateTime;
         return $date->format('Uu');
     }
 
