@@ -1,18 +1,11 @@
 #!/usr/bin/php
 <?php
 require_once 'vendor/autoload.php';
-$path = __DIR__ . '/Units';
-$files = new RegexIterator(
-    new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($path)
-    ),
-    '/^.+Test.php$/'
-);
-foreach ($files as $file) {
-    $fileName = $file->getFileName();
-    $pathName = $file->getPathName();
-    $test = str_replace('.php', '', $fileName);
-    $test_class = "Tests\\Units\\$test";
+$path = __DIR__ . '/Units/';
+$files = glob($path . '*Test.php');
+foreach ($files as $fileName) {
+    $fileName = basename($fileName, '.php');
+    $test_class = "Tests\\Units\\$fileName";
     echo str_repeat('-', 64) . PHP_EOL;
     $test_class = new $test_class; // Instantiate the command
     echo $test_class::class . PHP_EOL;
