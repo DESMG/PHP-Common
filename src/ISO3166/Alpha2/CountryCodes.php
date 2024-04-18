@@ -4,7 +4,8 @@ namespace DESMG\ISO3166\Alpha2;
 
 readonly class CountryCodes
 {
-    public const array ISO_3166_1_ALPHA_2 = [
+    /** @var string[] */
+    const array ISO_3166_1_ALPHA_2 = [
         'AC', 'AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ',
         'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ',
         'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CP', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ',
@@ -33,7 +34,9 @@ readonly class CountryCodes
         'YE', 'YT',
         'ZA', 'ZM', 'ZW',
     ];
-    public const array UNKNOWN_COUNTRY = [
+
+    /** @var string[] */
+    const array UNKNOWN_COUNTRY = [
         'AA', 'AB', 'AH', 'AJ', 'AK', 'AN', 'AP', 'AV', 'AY',
         'BC', 'BK', 'BP', 'BU', 'BX',
         'CB', 'CE', 'CJ', 'CQ', 'CS', 'CT',

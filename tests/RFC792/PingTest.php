@@ -15,8 +15,8 @@ class PingTest extends TestCase
     {
         $ping = new Ping;
         $ping->setTimeout(1);
-        $ping->setHost('www.desmg.com');
-        $ping->run();
+        $ping->setHost('127.0.0.1');
+        $ping->run(2);
         $this->assertIsFloat($ping->getLatency());
         $this->assertIsFloat($ping->getLossRate());
     }

@@ -9,7 +9,13 @@ class SignatureTest extends TestCase
 {
     public function testSign()
     {
-        $sign = Signature::sign('test', 'test');
-        $this->assertEquals('125d6d03b32c84d492747f79cf0bf6e179d287f341384eb5d6d3197525ad6be8e6df0116032935698f99a09e265073d1d6c32c274591bf1d0a20ad67cba921bc', $sign);
+        $t = '1700000000';
+        $signature = new Signature(['test' => 'test'], $t, 'test');
+        $payload = $signature->getPayload();
+        $this->assertEquals("test=test&timestamp={$t}test", $payload);
+        $sign = $signature->sign();
+        $this->assertEquals('34D200B9295A39CFA5978410F034B5A336FC04652674C5378F6A926CA17CBC223357EEB0D5506B95CF39A9469EEC414F298AE944696C0CF9A305587DBDC30C97', $sign);
+        $sign = $signature->sign();
+        $this->assertEquals('34D200B9295A39CFA5978410F034B5A336FC04652674C5378F6A926CA17CBC223357EEB0D5506B95CF39A9469EEC414F298AE944696C0CF9A305587DBDC30C97', $sign);
     }
 }
