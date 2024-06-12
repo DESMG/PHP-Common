@@ -2,7 +2,7 @@
 
 namespace DESMG\DESMG;
 
-use DESMG\RFC6986\Hashs;
+use DESMG\RFC6986\Hash;
 
 class Signature
 {
@@ -16,7 +16,7 @@ class Signature
         $data = http_build_query($data, encoding_type: PHP_QUERY_RFC3986);
         $this->data = $data;
         $this->secret = $secret;
-        $this->payload = "$this->data&timestamp=$timestamp$this->secret";
+        $this->payload = "$this->data&timestamp=$timestamp";
     }
 
     public function getPayload(): string
@@ -26,7 +26,7 @@ class Signature
 
     public function sign(): string
     {
-        $sign = hash(Hashs::SHA512->value, $this->payload);
+        $sign = Hash::sha512($this->payload, $this->secret);
         return strtoupper($sign);
     }
 }
