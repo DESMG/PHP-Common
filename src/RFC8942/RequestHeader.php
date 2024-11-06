@@ -81,9 +81,9 @@ readonly class RequestHeader
         $result = implode($notABrand);
         $result = trim($result);
         /** @noinspection PhpUnhandledExceptionInspection */
-        $v = random_int(1, 99);
+        $v = random_int(90, 199);
         /** @noinspection PhpUnhandledExceptionInspection */
-        $v2 = random_int(1, 99) . '.' . random_int(1, 99);
+        $v2 = random_int(90, 199) . '.0.0.0';
         return ["\"$result\";v=\"$v\"", "\"$result\";v=\"$v2\""];
     }
 }
