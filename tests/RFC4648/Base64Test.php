@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\BASE64;
+namespace Tests\RFC4648;
 
-use DESMG\BASE64\Base64;
+use DESMG\RFC4648\Base64;
 use PHPUnit\Framework\TestCase;
 
 class Base64Test extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace DESMG\RFC3548;
+namespace DESMG\RFC4648;
 
 use InvalidArgumentException;
 

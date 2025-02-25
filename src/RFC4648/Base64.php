@@ -1,6 +1,6 @@
 <?php
 
-namespace DESMG\BASE64;
+namespace DESMG\RFC4648;
 
 class Base64
 {

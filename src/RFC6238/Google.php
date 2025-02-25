@@ -2,7 +2,7 @@
 
 namespace DESMG\RFC6238;
 
-use DESMG\RFC3548\Base32;
+use DESMG\RFC4648\Base32;
 
 readonly class Google
 {
