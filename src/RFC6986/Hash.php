@@ -46,7 +46,7 @@ use InvalidArgumentException;
  * @method static bool sha384_file_equals(string $hash, string $filename, string $key = '')
  * @method static bool sha512_file_equals(string $hash, string $filename, string $key = '')
  */
-class Hash
+final readonly class Hash
 {
     /**
      * @param string $name

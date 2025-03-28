@@ -2,7 +2,7 @@
 
 namespace DESMG\RFC4648;
 
-class Base64
+final readonly class Base64
 {
     public static function urldecode(string $data): false|string
     {

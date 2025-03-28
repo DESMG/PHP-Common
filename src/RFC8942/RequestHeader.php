@@ -13,6 +13,30 @@ readonly class RequestHeader
     {
     }
 
+    public function generateNotABrand(): array
+    {
+        $notABrand = ['', 'Not', '', 'A', '', 'Brand', '',];
+        $characters = str_split(
+            str_repeat(':', 10) .
+            str_repeat(')', 20) .
+            str_repeat('(', 30) .
+            str_repeat(';', 40) .
+            str_repeat(' ', 50)
+        );
+        shuffle($characters);
+        foreach ([0, 2, 4, 6] as $index) {
+            $randomCharacter = $characters[array_rand($characters)];
+            $notABrand[$index] = $randomCharacter;
+        }
+        $result = implode($notABrand);
+        $result = trim($result);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $v = random_int(130, 199);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $v2 = random_int(130, 199) . '.0.0.0';
+        return ["\"$result\";v=\"$v\"", "\"$result\";v=\"$v2\""];
+    }
+
     public function getCURLHeaders(): array
     {
         $clientVersion = $this->clientVersion;
@@ -62,29 +86,5 @@ readonly class RequestHeader
             'Upgrade-Insecure-Requests' => '1',
             'User-Agent' => "$protocted Linux/$linuxVersion Fedora/$fedoraVersion IA64 x86_64 Chrome/$chromeVersion.0.0.0 DESMG-Web-Client/$clientVersion",
         ];
-    }
-
-    public function generateNotABrand(): array
-    {
-        $notABrand = ['', 'Not', '', 'A', '', 'Brand', '',];
-        $characters = str_split(
-            str_repeat(':', 10) .
-            str_repeat(')', 20) .
-            str_repeat('(', 30) .
-            str_repeat(';', 40) .
-            str_repeat(' ', 50)
-        );
-        shuffle($characters);
-        foreach ([0, 2, 4, 6] as $index) {
-            $randomCharacter = $characters[array_rand($characters)];
-            $notABrand[$index] = $randomCharacter;
-        }
-        $result = implode($notABrand);
-        $result = trim($result);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $v = random_int(90, 199);
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $v2 = random_int(90, 199) . '.0.0.0';
-        return ["\"$result\";v=\"$v\"", "\"$result\";v=\"$v2\""];
     }
 }

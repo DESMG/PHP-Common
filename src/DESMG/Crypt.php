@@ -6,7 +6,7 @@ use DESMG\RFC6986\Hash;
 use InvalidArgumentException;
 use Throwable;
 
-class Crypt
+final readonly class Crypt
 {
     public static function decrypt(string $cipher, string $key): ?string
     {

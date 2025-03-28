@@ -4,9 +4,9 @@ namespace DESMG\RFC4648;
 
 use InvalidArgumentException;
 
-class Base32
+final readonly class Base32
 {
-    private static array $lut = [
+    const array LUT = [
         'A' => 0, 'B' => 1, 'C' => 2, 'D' => 3,
         'E' => 4, 'F' => 5, 'G' => 6, 'H' => 7,
         'I' => 8, 'J' => 9, 'K' => 10, 'L' => 11,
@@ -29,7 +29,7 @@ class Base32
         $binary = '';
         for ($i = 0; $i < $l; $i++) {
             $n <<= 5;
-            $n += self::$lut[$b32[$i]];
+            $n += self::LUT[$b32[$i]];
             $j += 5;
             if ($j >= 8) {
                 $j -= 8;
@@ -51,11 +51,11 @@ class Base32
             $j += 8;
             while ($j >= 5) {
                 $j -= 5;
-                $b32 .= self::$lut[($n & (0x1F << $j)) >> $j];
+                $b32 .= self::LUT[($n & (0x1F << $j)) >> $j];
             }
         }
         if ($j > 0) {
-            $b32 .= self::$lut[($n & (0x1F << (5 - $j))) << (5 - $j)];
+            $b32 .= self::LUT[($n & (0x1F << (5 - $j))) << (5 - $j)];
         }
         return $b32;
     }

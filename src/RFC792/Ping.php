@@ -7,7 +7,7 @@ use Exception;
 use RuntimeException;
 use Socket;
 
-class Ping
+readonly class Ping
 {
     private string $host;
     private false|Socket $socket;
@@ -147,25 +147,14 @@ class Ping
     }
 
     /**
-     * @return float
+     * @param int $seconds
+     * @return void
      */
-    private function getTimeus(): float
+    public function setTimeout(int $seconds): void
     {
-        $date = new DateTime;
-        return $date->format('Uu');
-    }
-
-    /**
-     * @param int $i
-     * @return string
-     */
-    private function getPackage(int $i): string
-    {
-        $checksum = hex2bin('0000');
-        $seq_number = hex2bin(str_pad($i, 4, '0', STR_PAD_LEFT));
-        $package = hex2bin('0800') . $checksum . hex2bin('0000') . $seq_number . 'PingHost';
-        $checksum = $this->getCheckSum($package);
-        return hex2bin('0800') . $checksum . hex2bin('0000') . $seq_number . 'PingHost';
+        $this->timeout = $seconds;
+        socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => $seconds, 'usec' => 0]);
+        socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => $seconds, 'usec' => 0]);
     }
 
     /**
@@ -183,13 +172,24 @@ class Ping
     }
 
     /**
-     * @param int $seconds
-     * @return void
+     * @param int $i
+     * @return string
      */
-    public function setTimeout(int $seconds): void
+    private function getPackage(int $i): string
     {
-        $this->timeout = $seconds;
-        socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => $seconds, 'usec' => 0]);
-        socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => $seconds, 'usec' => 0]);
+        $checksum = hex2bin('0000');
+        $seq_number = hex2bin(str_pad($i, 4, '0', STR_PAD_LEFT));
+        $package = hex2bin('0800') . $checksum . hex2bin('0000') . $seq_number . 'PingHost';
+        $checksum = $this->getCheckSum($package);
+        return hex2bin('0800') . $checksum . hex2bin('0000') . $seq_number . 'PingHost';
+    }
+
+    /**
+     * @return float
+     */
+    private function getTimeus(): float
+    {
+        $date = new DateTime;
+        return $date->format('Uu');
     }
 }

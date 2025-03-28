@@ -6,7 +6,7 @@ use DESMG\ISO3166\Alpha2\CountryCodes;
 use InvalidArgumentException;
 use Throwable;
 
-class Emoji
+final readonly class Emoji
 {
     public static function fromCountryCode(string $countryCode = 'XX', ?string $continentCode = 'XX'): string
     {

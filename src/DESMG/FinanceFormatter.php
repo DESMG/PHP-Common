@@ -4,7 +4,7 @@ namespace DESMG\DESMG;
 
 use InvalidArgumentException;
 
-class FinanceFormatter
+readonly class FinanceFormatter
 {
     const int ROUND = 0;
     const int CEIL = 1;
@@ -41,18 +41,6 @@ class FinanceFormatter
     }
 
     /**
-     * convert Yuan to Cent
-     */
-    public static function y2c(float $y): int
-    {
-        $y = explode('.', $y);
-        if (count($y) != 2) {
-            return bcmul($y[0], 100, 0);
-        }
-        return $y[0] . $y[1];
-    }
-
-    /**
      * format float number to fixed decimals
      */
     public static function format(float $number, int $decimals = 2, int $method = self::ROUND): float|int
@@ -71,5 +59,17 @@ class FinanceFormatter
             }
         }
         return number_format($number, $decimals, '.', '');
+    }
+
+    /**
+     * convert Yuan to Cent
+     */
+    public static function y2c(float $y): int
+    {
+        $y = explode('.', $y);
+        if (count($y) != 2) {
+            return bcmul($y[0], 100, 0);
+        }
+        return $y[0] . $y[1];
     }
 }

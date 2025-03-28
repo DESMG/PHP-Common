@@ -2,7 +2,7 @@
 
 namespace DESMG\ISO3166\Alpha2;
 
-readonly class CountryCodes
+final readonly class CountryCodes
 {
     /** @var string[] */
     const array ISO_3166_1_ALPHA_2 = [

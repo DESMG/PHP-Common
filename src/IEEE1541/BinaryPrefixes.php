@@ -2,27 +2,20 @@
 
 namespace DESMG\IEEE1541;
 
-class BinaryPrefixes
+readonly class BinaryPrefixes
 {
     public static function formatSize(int $byte, bool $bit = false): string
     {
-        $unit = 'B';
+        $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
         if ($bit) {
             $byte = bcdiv($byte, 8, 3);
         }
-        if ($byte >= 1024) {
-            $byte = bcdiv($byte, 1024, 6);
-            $unit = 'KiB';
+        foreach ($units as $i => $unit) {
+            if ($byte < 1024 || $i === count($units) - 1) {
+                break;
+            }
+            $byte = bcdiv($byte, 1024, 3 * ($i + 2));
         }
-        if ($byte >= 1024) {
-            $byte = bcdiv($byte, 1024, 9);
-            $unit = 'MiB';
-        }
-        if ($byte >= 1024) {
-            $byte = bcdiv($byte, 1024, 12);
-            $unit = 'GiB';
-        }
-        $byte = rtrim($byte, '.0');
-        return "$byte $unit";
+        return sprintf("%s %s", rtrim($byte, '.0'), $unit);
     }
 }

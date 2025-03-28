@@ -4,7 +4,7 @@ namespace DESMG\RFC6238;
 
 use DESMG\RFC4648\Base32;
 
-readonly class Google
+final readonly class Google
 {
     private function __construct(
         private string $key = '',
@@ -47,11 +47,6 @@ readonly class Google
         return new self($key, $algorithm, $length, $window, (int)floor(microtime(true) / $period));
     }
 
-    public function verifyHOTP(string $pass, int $counter = 0): bool
-    {
-        return $this->getPass($counter) == $pass;
-    }
-
     public function getPass(?int $counter = null): string|false
     {
         $key = Base32::decode($this->key);
@@ -62,6 +57,11 @@ readonly class Google
         $temp = $temp[1] & 0x7FFFFFFF;
         $hash = substr($temp, 0 - $this->length);
         return str_pad($hash, $this->length, '0', STR_PAD_LEFT);
+    }
+
+    public function verifyHOTP(string $pass, int $counter = 0): bool
+    {
+        return $this->getPass($counter) == $pass;
     }
 
     public function verifyTOTP(string $pass): bool
