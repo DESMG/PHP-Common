@@ -7,7 +7,7 @@ use Exception;
 use RuntimeException;
 use Socket;
 
-readonly class Ping
+class Ping
 {
     private string $host;
     private false|Socket $socket;
