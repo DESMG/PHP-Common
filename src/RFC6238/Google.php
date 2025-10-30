@@ -29,9 +29,6 @@ final readonly class Google
 
     public static function instance(string $key, string $algorithm = 'sha1', int $length = 6, int $window = 2, int $period = 30): ?self
     {
-        if (strlen($key) != 32) {
-            return null;
-        }
         if (!in_array($algorithm, ['sha1', 'sha256', 'sha512'], true)) {
             return null;
         }
