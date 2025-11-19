@@ -45,7 +45,7 @@ readonly class RequestHeader
 
         $clientVersionShort = explode('.', $clientVersion)[0];
         $chromeVersion = $this->minChromeVersion;
-        $protocted = 'User_Agent_Protected_By_Client_Hints (https://web.dev/user-agent-client-hints/)';
+        $protocted = 'User_Agent_Protected_By_Client_Hints (RFC8942)';
         [$notABrand, $notABrandFull] = $this->generateNotABrand();
         $sec_ch_ua = [
             sprintf('"Google Chrome";v="%s"', $chromeVersion),
