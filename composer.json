@@ -17,12 +17,15 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "ext-bcmath": "*",
         "ext-mbstring": "*",
         "ext-openssl": "*",
         "ext-sockets": "*",
         "ext-ctype": "*"
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.8.5"
     },
     "autoload": {
         "psr-4": {
@@ -44,8 +47,5 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "require-dev": {
-        "pestphp/pest": "^3.7"
-    }
+    "prefer-stable": true
 }
